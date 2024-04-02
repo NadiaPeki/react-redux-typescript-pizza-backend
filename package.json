@@ -1,0 +1,20 @@
+{
+  "name": "react-pizza-backend",
+  "version": "1.0.0",
+  "description": "backend part for connection with MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "backend",
+    "pizza",
+    "react-redux-typescript"
+  ],
+  "author": "Nadzeya Pekarskaya",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
