@@ -1,0 +1,11 @@
+# Игнорировать файл .env
+.env
+# Игнорировать файлы с расширением .log
+*.log
+
+# Игнорировать папку node_modules
+node_modules/
+
+# Игнорировать временные файлы
+*~
+node_modules/.cache/default-development/*.pack
