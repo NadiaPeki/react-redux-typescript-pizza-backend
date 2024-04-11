@@ -69,7 +69,7 @@ const updatePizza = async (req, res) => {
     const pizza = await Pizza.findByIdAndUpdate(
       pizzaId,
       updateData,
-      { new: true }, // чтобы получить обновленный документ
+      { new: true }, 
     );
 
     if (!pizza) {

@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const Pizza = require('./models/pizza');
@@ -6,7 +7,6 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
-const URL = 'mongodb+srv://napekarskaya:nadia060290i@cluster0.e3cmski.mongodb.net/pizzasbase';
 
 app.use(cors());
 app.use(express.json());
@@ -23,11 +23,11 @@ app.use(pizzaRoutes);
 
 // Подключение к MongoDB
 mongoose
-  .connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => {
-    console.error('DB Connection error:', err.details);
-    process.exit(1); // Завершаем процесс с ошибкой
+    console.error('DB Connection error:', err.message);
+    process.exit(1);
   });
 
 // Запуск сервера
