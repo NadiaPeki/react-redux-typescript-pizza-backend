@@ -8,8 +8,16 @@ const handleError = (res, error) => {
 
 const getPizzas = async (req, res) => {
   try {
-    const pizzas = await Pizza.find();
-    console.log(pizzas);
+    let query = Pizza.find();
+
+    if (req.query.sort && req.query.order) {
+      const sortField = req.query.sort;
+      const sortOrder = req.query.order === 'asc' ? 1 : -1;
+      query = query.sort({ [sortField]: sortOrder });
+    }
+
+    const pizzas = await query.exec();
+
     res.status(200).json(pizzas);
   } catch (err) {
     console.error('Error fetching pizzas:', err);
@@ -66,11 +74,7 @@ const updatePizza = async (req, res) => {
     const pizzaId = req.params.id;
     const updateData = req.body;
 
-    const pizza = await Pizza.findByIdAndUpdate(
-      pizzaId,
-      updateData,
-      { new: true }, 
-    );
+    const pizza = await Pizza.findByIdAndUpdate(pizzaId, updateData, { new: true });
 
     if (!pizza) {
       console.error('Pizza not found for update');
