@@ -16,6 +16,15 @@ const getPizzas = async (req, res) => {
       query = query.sort({ [sortField]: sortOrder });
     }
 
+    if (req.query.search) {
+      const searchTerm = new RegExp(req.query.search, 'i');
+      query = query.or([{ title: searchTerm }]);
+    }
+
+    if (req.query.category) {
+      query = query.where('category').equals(req.query.category);
+    }
+
     const pizzas = await query.exec();
 
     res.status(200).json(pizzas);
