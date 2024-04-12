@@ -10,17 +10,23 @@ const getPizzas = async (req, res) => {
   try {
     let query = Pizza.find();
 
+    // Сортировка
     if (req.query.sort && req.query.order) {
       const sortField = req.query.sort;
       const sortOrder = req.query.order === 'asc' ? 1 : -1;
       query = query.sort({ [sortField]: sortOrder });
+    } else {
+      // Сортировка по алфавиту, если нет параметров сортировки
+      query = query.sort({ title: 1 });
     }
 
+    // Поиск
     if (req.query.search) {
       const searchTerm = new RegExp(req.query.search, 'i');
       query = query.or([{ title: searchTerm }]);
     }
 
+    // Фильтрация по категории
     if (req.query.category) {
       query = query.where('category').equals(req.query.category);
     }
