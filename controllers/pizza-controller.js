@@ -29,9 +29,14 @@ const getPizzas = async (req, res) => {
 
     const pizzas = await query.exec();
 
+    // Проверка, что результат является массивом
+    if (!Array.isArray(pizzas)) {
+      throw new Error('Query result is not an array');
+    }
+
     res.status(200).json(pizzas);
   } catch (err) {
-    console.error('Error fetching pizzas:', err);
+    console.error('Error deleting pizza:', err instanceof Error ? err : err.toString());
     handleError(res, err);
   }
 };
