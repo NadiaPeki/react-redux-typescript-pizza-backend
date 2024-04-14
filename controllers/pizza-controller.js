@@ -20,7 +20,7 @@ const getPizzas = async (req, res) => {
 
     if (req.query.search) {
       const searchTerm = new RegExp(req.query.search, 'i');
-      query = query.or([{ title: { $regex: searchTerm, $options: 'i' } }]);
+      query = query.where({ $or: [{ title: { $regex: searchTerm, $options: 'i' } }] });
     }
 
     if (req.query.category) {
