@@ -20,10 +20,11 @@ const getPizzas = async (req, res) => {
 
     if (req.query.search) {
       console.log('Search query:', req.query.search);
+    
       const searchTerm = new RegExp(req.query.search, 'i');
-      query = query.where({ $or: [{ title: { $regex: searchTerm, $options: 'i' } }] });
+      query = query.where({ $or: [{ title: searchTerm }] }); 
     }
-
+    
     if (req.query.category) {
       query = query.where('category').equals(req.query.category.toLowerCase());
     }
