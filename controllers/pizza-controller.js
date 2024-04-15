@@ -38,7 +38,13 @@ const getPizzas = async (req, res) => {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    const total = await Pizza.countDocuments();
+    let totalQuery = Pizza.find(); // Запрос для подсчета общего количества записей
+
+    if (req.query.category) {
+      totalQuery = totalQuery.where('category').equals(req.query.category.toLowerCase());
+    }
+
+    const total = await totalQuery.countDocuments(); // Подсчет общего количества записей
 
     query = query.skip(startIndex).limit(limit);
 
