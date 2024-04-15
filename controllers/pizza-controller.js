@@ -20,25 +20,46 @@ const getPizzas = async (req, res) => {
 
     if (req.query.search) {
       console.log('Search query:', req.query.search);
-    
+
       const searchTerm = new RegExp(req.query.search, 'i');
-      query = query.where({ $or: [{ title: searchTerm }] }); 
+      query = query.where({ $or: [{ title: searchTerm }] });
     }
-    
+
     if (req.query.category) {
       query = query.where('category').equals(req.query.category.toLowerCase());
     }
 
+    // Добавление пагинации для вывода по 6 пицц на страницу
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6; // Выводим по 6 пицц на страницу
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const total = await Pizza.countDocuments();
+
+    query = query.skip(startIndex).limit(limit);
+
     const pizzas = await query.exec();
 
-    // Проверка, что результат является массивом
-    if (!Array.isArray(pizzas)) {
-      throw new Error('Query result is not an array');
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit: limit,
+      };
     }
 
-    res.status(200).json(pizzas);
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+
+    res.status(200).json({ pizzas, pagination });
   } catch (err) {
-    console.error('Error deleting pizza:', err instanceof Error ? err : err.toString());
+    console.error('Error fetching pizzas:', err instanceof Error ? err : err.toString());
     handleError(res, err);
   }
 };
