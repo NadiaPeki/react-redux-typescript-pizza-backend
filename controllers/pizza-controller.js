@@ -10,6 +10,13 @@ const getPizzas = async (req, res) => {
   try {
     let query = Pizza.find();
 
+    // Добавляем фильтрацию по категории, если указан параметр запроса
+    if (req.query.category) {
+      query = query.where('category').equals(req.query.category.toLowerCase());
+    }
+
+    // Продолжаем остальную логику: сортировка, поиск, пагинация
+
     if (req.query.sort && req.query.order) {
       const sortField = req.query.sort;
       const sortOrder = req.query.order === 'asc' ? 1 : -1;
@@ -23,10 +30,6 @@ const getPizzas = async (req, res) => {
 
       const searchTerm = new RegExp(req.query.search, 'i');
       query = query.where({ $or: [{ title: searchTerm }] });
-    }
-
-    if (req.query.category) {
-      query = query.where('category').equals(req.query.category.toLowerCase());
     }
 
     // Добавление пагинации для вывода по 6 пицц на страницу
