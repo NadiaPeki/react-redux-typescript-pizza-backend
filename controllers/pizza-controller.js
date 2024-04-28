@@ -15,7 +15,7 @@ const getPizzas = async (req, res) => {
       query = query.where('category').equals(req.query.category.toLowerCase());
     }
 
-    // Продолжаем остальную логику: сортировка, поиск, пагинация
+    // Продолжаем остальную логику: сортировка, поиск
 
     if (req.query.sort && req.query.order) {
       const sortField = req.query.sort;
@@ -32,41 +32,40 @@ const getPizzas = async (req, res) => {
       query = query.where({ $or: [{ title: searchTerm }] });
     }
 
-    // Добавление пагинации для вывода по 6 пицц на страницу
-    const page = parseInt(req.query.page) || 1;
-    const limit = 6; // Выводим по 6 пицц на страницу
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
+    // const page = parseInt(req.query.page) || 1;
+    // const limit = 6;
+    // const startIndex = (page - 1) * limit;
+    // const endIndex = page * limit;
 
-    let totalQuery = Pizza.find(); // Запрос для подсчета общего количества записей
+    // let totalQuery = Pizza.find();
 
-    if (req.query.category) {
-      totalQuery = totalQuery.where('category').equals(req.query.category.toLowerCase());
-    }
+    // if (req.query.category) {
+    //   totalQuery = totalQuery.where('category').equals(req.query.category.toLowerCase());
+    // }
 
-    const total = await totalQuery.countDocuments(); // Подсчет общего количества записей
+    // const total = await totalQuery.countDocuments();
 
-    query = query.skip(startIndex).limit(limit);
+    // query = query.skip(startIndex).limit(limit);
 
     const pizzas = await query.exec();
 
-    const pagination = {};
+    // const pagination = {};
 
-    if (endIndex < total) {
-      pagination.next = {
-        page: page + 1,
-        limit: limit,
-      };
-    }
+    // if (endIndex < total) {
+    //   pagination.next = {
+    //     page: page + 1,
+    //     limit: limit,
+    //   };
+    // }
 
-    if (startIndex > 0) {
-      pagination.prev = {
-        page: page - 1,
-        limit: limit,
-      };
-    }
+    // if (startIndex > 0) {
+    //   pagination.prev = {
+    //     page: page - 1,
+    //     limit: limit,
+    //   };
+    // }
 
-    res.status(200).json({ pizzas, pagination });
+    res.status(200).json({ pizzas }); // , pagination
   } catch (err) {
     console.error('Error fetching pizzas:', err instanceof Error ? err : err.toString());
     handleError(res, err);
