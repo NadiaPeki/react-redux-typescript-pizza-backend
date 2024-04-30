@@ -10,12 +10,9 @@ const getPizzas = async (req, res) => {
   try {
     let query = Pizza.find();
 
-    // Добавляем фильтрацию по категории, если указан параметр запроса
     if (req.query.category) {
       query = query.where('category').equals(req.query.category.toLowerCase());
     }
-
-    // Продолжаем остальную логику: сортировка, поиск
 
     if (req.query.sort && req.query.order) {
       const sortField = req.query.sort;
@@ -49,23 +46,15 @@ const getPizzas = async (req, res) => {
 
     const pizzas = await query.exec();
 
-    const pagination = {};
+    const pagination = {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalCount: total,
+      hasPrevPage: startIndex > 0,
+      hasNextPage: endIndex < total,
+    };
 
-    if (endIndex < total) {
-      pagination.next = {
-        page: page + 1,
-        limit: limit,
-      };
-    }
-
-    if (startIndex > 0) {
-      pagination.prev = {
-        page: page - 1,
-        limit: limit,
-      };
-    }
-
-    res.status(200).json({ pizzas }); 
+    res.status(200).json({ pizzas, pagination });
   } catch (err) {
     console.error('Error fetching pizzas:', err instanceof Error ? err : err.toString());
     handleError(res, err);
