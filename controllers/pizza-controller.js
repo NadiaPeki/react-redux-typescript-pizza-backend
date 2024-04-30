@@ -32,40 +32,40 @@ const getPizzas = async (req, res) => {
       query = query.where({ $or: [{ title: searchTerm }] });
     }
 
-    // const page = parseInt(req.query.page) || 1;
-    // const limit = 6;
-    // const startIndex = (page - 1) * limit;
-    // const endIndex = page * limit;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
-    // let totalQuery = Pizza.find();
+    let totalQuery = Pizza.find();
 
-    // if (req.query.category) {
-    //   totalQuery = totalQuery.where('category').equals(req.query.category.toLowerCase());
-    // }
+    if (req.query.category) {
+      totalQuery = totalQuery.where('category').equals(req.query.category.toLowerCase());
+    }
 
-    // const total = await totalQuery.countDocuments();
+    const total = await totalQuery.countDocuments();
 
-    // query = query.skip(startIndex).limit(limit);
+    query = query.skip(startIndex).limit(limit);
 
     const pizzas = await query.exec();
 
-    // const pagination = {};
+    const pagination = {};
 
-    // if (endIndex < total) {
-    //   pagination.next = {
-    //     page: page + 1,
-    //     limit: limit,
-    //   };
-    // }
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
 
-    // if (startIndex > 0) {
-    //   pagination.prev = {
-    //     page: page - 1,
-    //     limit: limit,
-    //   };
-    // }
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
 
-    res.status(200).json({ pizzas }); // , pagination
+    res.status(200).json({ pizzas }); 
   } catch (err) {
     console.error('Error fetching pizzas:', err instanceof Error ? err : err.toString());
     handleError(res, err);
