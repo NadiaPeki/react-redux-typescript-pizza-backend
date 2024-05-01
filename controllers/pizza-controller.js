@@ -64,7 +64,7 @@ const getPizzas = async (req, res) => {
 const getPizzaById = async (req, res) => {
   try {
     const { id } = req.params;
-    const pizza = await Pizza.findOne({ id: id });
+    const pizza = await Pizza.findOne({ id: parseInt(id) });
 
     if (!pizza) {
       return res.status(404).json({ error: 'Pizza not found' });
